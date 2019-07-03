@@ -22,7 +22,7 @@ command! -nargs=1 -complete=customlist,s:list_simulators
       \ Xsimulator call <sid>set_simulator("<args>")
 
 function! s:system_runner()
-  if has('nvim')
+  if has('nvim') && !exists(':AsyncRun')
     return 'terminal'
   else
     return '!'
@@ -135,7 +135,11 @@ endfunction
 
 function! s:execute_command(cmd)
   let run_cmd = substitute(s:runner_template(), '{cmd}', a:cmd, 'g')
-  execute run_cmd
+  if exists(":AsyncRun")
+    execute "AsyncRun" run_cmd
+  else
+    execute run_cmd
+  endif
 endfunction
 
 function! s:assert_project()
