@@ -346,7 +346,14 @@ function! s:destination(simulator)
 endfunction
 
 function! s:iphone_simulator_destination(simulator)
-  return '-destination "platform=iOS Simulator,name=' . a:simulator . '"'
+  let l:platform = "iOS Simulator"
+  if exists('g:xcode_not_simulator') && g:xcode_not_simulator
+    let l:platform = "iOS"
+  endif
+  if a:simulator=='generic' || a:simulator==''
+    return '-destination generic/platform='.l:platform
+  endif
+  return '-destination "platform=' . l:platform . ',name=' . a:simulator . '"'
 endfunction
 
 function! s:osx_destination()
